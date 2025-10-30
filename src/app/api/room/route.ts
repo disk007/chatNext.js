@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../prisma/prisma";
+import { nanoid } from "nanoid";
 
 export const POST = async (request: Request) => {
     const body = await request.json();
     const { room,userId } = body;
-
+    const code = nanoid(8);
     const newRoom = await prisma.chatRoom.create({
         data: { 
             name: room,  
-            createdBy: userId,    
+            createdBy: userId,
+            code    
         },
     });
     await prisma.chatMember.create({

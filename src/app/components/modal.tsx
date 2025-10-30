@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import { Button } from "../ds/Button";
 import { handleAddRoom } from "./action/addRoomChat";
 import { showToast, ToastStatusEnum } from "../toast/toast";
+import { JoinChatRoom } from "./action/joinChatRoom";
 
 type ModalProps = {
   title: string;
@@ -90,16 +91,16 @@ export default function modalAddChat({ title, onClose,placeholder }: ModalProps)
 export function ModalJoinChat({ title, onClose,placeholder }: ModalProps) {
   const [container, setContainer] = React.useState<HTMLElement | null>(null);
   const [formValues, setFormValues] = useState({
-    room: "",
+    code: "",
   });
-  const [message, formAction] = useActionState(handleAddRoom,null);
+  const [message, formAction] = useActionState(JoinChatRoom,null);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
   const resetformValues = () => {
     setFormValues({
-        room: "",
+        code: "",
     });
     onClose()
   }
@@ -118,9 +119,10 @@ export function ModalJoinChat({ title, onClose,placeholder }: ModalProps) {
         resetformValues();
     } else if (message?.status === "error") {
         showToast(ToastStatusEnum.ERROR, message.message);
+    } else if(message?.status === "warning"){
+        showToast(ToastStatusEnum.WARNING, message.message)
     }
   }, [message]);
-
   if (!container) return null;
 
   return createPortal(
@@ -132,14 +134,14 @@ export function ModalJoinChat({ title, onClose,placeholder }: ModalProps) {
         <form className="flex flex-col" action={formAction}>
           <div className="w-full mb-4">
             <input
-              name="room"
+              name="code"
               placeholder={placeholder}
-              value={formValues.room}
+              value={formValues.code}
               onChange={handleChange}
               className="w-full px-3 py-3 rounded bg-[#334155] border border-[#475569] focus:outline-none focus:ring-2 focus:ring-[#F97316] transition-colors text-white"
             />
-            {message?.errors?.room && (
-                <p className="text-xs mt-1 text-red-500">{message.errors.room}</p>
+            {message?.errors?.code && (
+                <p className="text-xs mt-1 text-red-500">{message.errors.code}</p>
             )}
           </div>
           <div className="flex justify-end space-x-3 mt-2">
@@ -151,7 +153,7 @@ export function ModalJoinChat({ title, onClose,placeholder }: ModalProps) {
             </button>
             <Button 
               type="submit"
-              text="Add"
+              text="Join"
               className="px-4 py-2 rounded bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold transition-colors"
             />
           </div> 

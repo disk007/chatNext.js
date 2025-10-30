@@ -5,6 +5,7 @@ import { GetDetailChat } from "../api/room/detailChat/getDatailChat";
 import { EllipsisVerticalIcon, PaperClipIcon } from "@heroicons/react/24/outline";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import SendChat from "./sendChat";
+import { is } from "zod/locales";
 
 type ContentProps = {
   roomId: string | null;
@@ -24,20 +25,33 @@ type ChatDetail = {
 };
 const Content = ({ roomId }: ContentProps) => {
   const [detailChat, setDetailChat] = useState<ChatDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const fetchDetailChat = async () => {
     if (!roomId) {
       setDetailChat(null);
+      setIsLoading(false);
       return;
     }
+    setIsLoading(true);
     const data = await GetDetailChat(roomId);
-      setDetailChat(data.chat || null);
-    };
-    useEffect(() => {
-        fetchDetailChat();
-    }, [roomId]);
+    setDetailChat(data.chat || null);
+    setIsLoading(false);
+  };
+  useEffect(() => {
+      fetchDetailChat();
+  }, [roomId]);
+  
   return (
     <div className="ml-[450px] h-screen w-[calc(100%-450px)] flex flex-col fixed bg-gradient-to-b from-[#0F172A] to-[#1E293B] text-[#E2E8F0]">
-      {detailChat && detailChat != null && (
+      {isLoading && (
+        <div className="flex-1 flex justify-center items-center">
+          <div className="flex flex-col items-center">
+            <div className="w-10 h-10 border-4 border-t-[#38BDF8] border-gray-700 rounded-full animate-spin"></div>
+            <p className="mt-3 text-gray-400">Loading chat...</p>
+          </div>
+        </div>
+      )}
+      {!isLoading && detailChat && detailChat != null && (
         <>
           <div className="p-4 border-2 border-[#1E293B] flex-row flex justify-between items-center">
             <div>

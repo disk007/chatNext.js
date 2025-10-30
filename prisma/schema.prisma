@@ -27,7 +27,7 @@ model ChatRoom {
   name        String
   isGroup     Boolean       @default(true)
   createdAt   DateTime      @default(now()) @db.Timestamptz(6)
-  code        String        @unique
+  code        String?       @unique
   createdBy   Int?
   members     ChatMember[]  // เชื่อมกับ ChatMember.room
   messages    Message[]
@@ -39,6 +39,7 @@ model ChatMember {
   user      User      @relation(fields: [userId], references: [id])
   userId    Int
   role      String    @default("member")
+  isApproved Boolean   @default(false)
   joinedAt  DateTime  @default(now())
 
   @@unique([roomId, userId])
