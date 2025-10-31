@@ -31,6 +31,10 @@ export const GET = async (request: Request,
                         senderId: true,
                     },
                 },
+                members: {
+                    where: { userId }, 
+                    select: { isApproved: true },
+                },
             },
         });
         const updatedMessages = chat?.messages.map(msg => ({
@@ -39,13 +43,17 @@ export const GET = async (request: Request,
             createdAt: msg.createdAt,
             anotherChat: msg.senderId !== userId, 
         }));
+        const chatData = {
+            id: chat?.id,
+            name: chat?.name,
+            isGroup: chat?.isGroup,
+            isApproved: chat?.members[0]?.isApproved ?? false,
+            messages: updatedMessages,
+        };
 
         return NextResponse.json({
             status: "success",
-            chat: {
-                ...chat,
-                messages: updatedMessages
-            },
+            chat: chatData,
         });
     }
     catch(error){
