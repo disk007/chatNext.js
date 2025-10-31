@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { GetRoom } from "../api/room/getRoom";
 import Content from "./content";
-import { tr } from "zod/locales";
 
 const ListChat = () => {
     const [rooms,setRooms] = useState([]);
