@@ -3,7 +3,7 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline"
 import { useEffect, useRef, useState } from "react";
 import { useClickOutside } from "../hook/useClickOutside";
 import { useMenuChat } from "../hook/useMenuChat";
-import { ModalMembers } from "./modal";
+import { ModalApproveMembers, ModalMembers } from "./modal";
 
 const MenuChat = ({ roomId }: ContentProps) => {
     const [open, setOpen] = useState(false);
@@ -50,7 +50,7 @@ const MenuChat = ({ roomId }: ContentProps) => {
                     </div>
 
                     {/* Pending Approval */}
-                    <div className="flex justify-between items-center py-3 px-4 hover:bg-[#1E293B] cursor-pointer transition-colors duration-200">
+                    <div className="flex justify-between items-center py-3 px-4 hover:bg-[#1E293B] cursor-pointer transition-colors duration-200" onClick={()=>{OpenModal("approveMembers")}}>
                         <div className="flex items-center gap-2">
                         <ClockIcon className="w-5 h-5 text-yellow-400" />
                         <span className="text-sm font-medium">Pending Approval</span>
@@ -62,9 +62,17 @@ const MenuChat = ({ roomId }: ContentProps) => {
                 </div>
             )}
             </div>
-            {openModal == "members" &&
+            {openModal == "members" && roomId &&
                 <ModalMembers
                     title="Members"
+                    roomId={roomId}
+                    onClose={()=> setModalOpen("")}
+                />
+            }
+            {openModal == "approveMembers" && roomId &&
+                <ModalApproveMembers
+                    title="Approve Members"
+                    roomId={roomId}
                     onClose={()=> setModalOpen("")}
                 />
             }
