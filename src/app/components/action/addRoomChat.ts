@@ -46,6 +46,6 @@ export async function handleAddRoom(prevState:any,formData: FormData) {
     return returnData;
   } catch (error) {
     console.error("API Error:", error);
-    return { status: "error", message: "Network error" };
+    return { status: "error", message: "API Error" };
   }
 }

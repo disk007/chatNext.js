@@ -5,19 +5,21 @@ export const POST = async (req:Request) => {
     try {
         const body = await req.json();
         const { code,userId } = body;
-
+        console.log('userId ',userId)
         const member = await prisma.chatMember.findFirst({
             where: {
                 userId: userId,
                 isApproved: true,
+
             },
         });
-        if(member){
-            return NextResponse.json({
-                status: "warning",
-                message: "User is an approved member.",
-            });
-        }
+        console.log('member ',member)
+        // if(member){
+        //     return NextResponse.json({
+        //         status: "warning",
+        //         message: "User is an approved member.",
+        //     });
+        // }
         const existCode = await prisma.chatRoom.findFirst({
             where:{ code },
         })
