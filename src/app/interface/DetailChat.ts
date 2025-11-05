@@ -1,6 +1,12 @@
+type ContentNameProps = {
+  roomId: string | null;
+  name:string | null;
+};
+
 type ContentProps = {
   roomId: string | null;
 };
+
 type Message = {
   anotherChat: boolean;
   id: number;

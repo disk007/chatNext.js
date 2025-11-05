@@ -10,10 +10,6 @@ export const GET = async (req:Request,context: { params: Promise<{userId: string
         const permission = await prisma.chatMember.findFirst({
             where:{userId}
         })
-        console.log(permission?.role)
-        if(permission?.role != 'admin'){
-            return NextResponse.json({status:"error",message:'Access denied'})
-        }
         const approvedCount = await prisma.chatMember.count({
             where: { isApproved: true,roomId },
         });
@@ -21,10 +17,22 @@ export const GET = async (req:Request,context: { params: Promise<{userId: string
         const pendingCount = await prisma.chatMember.count({
             where: { isApproved: false,roomId },
         });
-        const messages = {
-            approvedCount,
-            pendingCount
+        let messages:any
+        if(permission?.role != 'admin'){
+            messages = {
+                approvedCount,
+                pendingCount,
+                role:permission?.role
+            }
         }
+        else{
+            messages = {
+                approvedCount,
+                pendingCount:null,
+                role:permission?.role
+            }
+        }
+        
         return NextResponse.json({status:"success",messages})
 
     } catch (error) {

@@ -30,7 +30,7 @@ const Content = ({ roomId }: ContentProps) => {
                 <div>
                   {detailChat.name}
                 </div>
-                <MenuChat roomId={roomId} />
+                <MenuChat roomId={roomId} name={detailChat.name} />
               </div>
               {detailChat.messages.length === 0 ? (
                 <div className="flex-1 flex flex-col justify-center items-center">
