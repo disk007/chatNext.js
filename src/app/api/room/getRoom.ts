@@ -25,7 +25,6 @@ export async function GetRoom() {
         if (!res.ok) {
             return returnData ;
         }
-        
         return returnData;
     } catch (error) {
         console.error("API Error:", error);

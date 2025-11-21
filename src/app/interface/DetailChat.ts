@@ -1,20 +1,20 @@
-type ContentNameProps = {
+export interface ContentNameProps {
   roomId: string | null;
   name:string | null;
 };
 
-type ContentProps = {
+export interface ContentProps {
   roomId: string | null;
 };
 
-type Message = {
+export interface Message {
   anotherChat: boolean;
   id: number;
   content: string;
   createdAt: string;
 };
 
-type ChatDetail = {
+export interface ChatDetail {
   id: number;
   name: string;
   isGroup: boolean;

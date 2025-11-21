@@ -3,10 +3,15 @@ import { PaperClipIcon } from "@heroicons/react/24/outline";
 import { useActionState, useEffect, useState } from "react";
 import { showToast, ToastStatusEnum } from "../toast/toast";
 import { addMessage } from "./action/addMessage";
+import { io } from "socket.io-client";
+import { useDetailChat } from "../hook/useDetailChat";
 
 type SendChatProps = {
   roomId: string | null;
 };
+const socket = io("http://localhost:3000", {
+  path: "/api/socket",
+});
 
 const SendChat = ({roomId}:SendChatProps) => {
     const [message, formAction] = useActionState(addMessage,null);
@@ -24,6 +29,11 @@ const SendChat = ({roomId}:SendChatProps) => {
     }
     useEffect(() => {
         if (message?.status === "success") {
+            socket.emit("send-message", {
+                roomId, 
+                message: formValues.message,
+            });
+            console.log("Message sent via socket:",formValues.message);
             resetformValues();
         } else if (message?.status === "error") {
             showToast(ToastStatusEnum.ERROR, message.message);

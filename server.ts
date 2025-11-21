@@ -1,0 +1,39 @@
+import { createServer } from "http";
+import next from "next";
+import { Server as SocketIOServer } from "socket.io";
+
+const dev = process.env.NODE_ENV !== "production";
+const app = next({ dev });
+const handle = app.getRequestHandler();
+
+app.prepare().then(() => {
+  const httpServer = createServer((req, res) => {
+    handle(req, res);
+  });
+
+  const io = new SocketIOServer(httpServer, {
+    path: "/api/socket",
+    cors: {
+      origin: "*",
+    },
+  });
+
+  io.on("connection", (socket) => {
+    console.log("🟢 User connected:", socket.id);
+
+    socket.on("join-room", (roomId: string) => {
+      socket.join(roomId);
+      console.log(`👥 User joined room ${roomId}`);
+    });
+
+    socket.on("send-message", (message) => {
+      console.log("📩 New message:", message);
+      io.to(message.roomId).emit("new-message", message);
+    });
+  });
+
+  const port = 3000;
+  httpServer.listen(port, () =>
+    console.log(`🚀 Server ready on http://localhost:${port}`)
+  );
+});

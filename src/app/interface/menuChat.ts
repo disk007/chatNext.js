@@ -1,34 +1,34 @@
-type menuChat = {
+export interface menuChat {
     approvedCount:number,
     pendingCount:number,
     role:string | null
 }
 
-interface ModalMembers {
+export interface interfaceMembers {
   title: string;
   roomId:string;
   role:string;
   onClose: () => void;
 }
-interface ModalApproveMembers {
+export interface interfaceApproveMembers {
   title: string;
   roomId:string;
   onClose: () => void;
 }
 
-interface ModalChageGroupName {
+export interface interfaceChageGroupName {
   title: string;
   roomId:string;
   name:string | null;
   onClose: () => void;
 }
-interface propMenuChat  {
+export interface propMenuChat  {
     roomId: string | null;
     onClose: () => void;
 }
 
 
-interface PropMembers {
+export interface PropMembers {
   user: {
     id: number;
     username: string;

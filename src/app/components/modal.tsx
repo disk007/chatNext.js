@@ -11,8 +11,10 @@ import { useApproveMembers, useMembers } from "../hook/useMenuChat";
 import { da } from "zod/locales";
 import { useModalRoot } from "../hook/useModalRoot";
 import { actionMembers } from "./action/actionMembers";
-
-type ModalProps = {
+import { updateGroup } from "./action/updateGroup";
+import { useDetailChat } from "../hook/useDetailChat";
+import { interfaceApproveMembers,interfaceChageGroupName,interfaceMembers } from "../interface/menuChat"
+interface ModalProps {
   title: string;
   onClose: () => void;
   placeholder: string;
@@ -159,7 +161,7 @@ export function ModalJoinChat({ title, onClose, placeholder }: ModalProps) {
   );
 }
 
-export function ModalMembers({ title, roomId, onClose,role }: ModalMembers) {
+export function ModalMembers({ title, roomId, onClose,role }: interfaceMembers) {
   const { members, isLoading, fetchMembers } = useMembers({ roomId });
   const container = useModalRoot()
   const [message, formAction] = useActionState(actionMembers, null);
@@ -248,7 +250,7 @@ export function ModalMembers({ title, roomId, onClose,role }: ModalMembers) {
   );
 }
 
-export function ModalApproveMembers({ title, roomId, onClose }: ModalApproveMembers) {
+export function ModalApproveMembers({ title, roomId, onClose }: interfaceApproveMembers) {
   const { members, isLoading, fetchMembers } = useApproveMembers({ roomId });
   const container = useModalRoot();
   const [actionType, setActionType] = useState('')
@@ -344,26 +346,22 @@ export function ModalApproveMembers({ title, roomId, onClose }: ModalApproveMemb
   );
 }
 
-export function ModalChageGroupName({ title,name, roomId, onClose }: ModalChageGroupName) {
-  const { members, isLoading, fetchMembers } = useApproveMembers({ roomId });
+export function ModalChageGroupName({ title,name, roomId, onClose }: interfaceChageGroupName) {
   const container = useModalRoot();
-  const [actionType, setActionType] = useState('')
-  const [message, formAction] = useActionState(actionMembers, null);
-  const [selected, setSelected] = useState<number[]>([]);
-  const handleToggle = (id: number) => {
-    setSelected(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    );
-  };
+  const [message, formAction] = useActionState(updateGroup, null);
+  const [newName,setNewName] = useState(name)
+  const { fetchDetailChat } = useDetailChat({roomId});
   useEffect(() => {
     if (message?.status === "success") {
       showToast(ToastStatusEnum.SUCCESS, message.message);
-      fetchMembers()
+      onClose()
       // resetformValues();
     } else if (message?.status === "error") {
       showToast(ToastStatusEnum.ERROR, message.message);
     } else if (message?.status === "warning") {
       showToast(ToastStatusEnum.WARNING, message.message)
+    } else if (message?.status === "info") {
+      showToast(ToastStatusEnum.INFO, message.message)
     }
   }, [message]);
   if (!container) return null;
@@ -377,18 +375,16 @@ export function ModalChageGroupName({ title,name, roomId, onClose }: ModalChageG
           </div>
           <div className="max-h-80 overflow-y-auto space-y-3">
             <input
-              id="newName"
-              name="newName"
+              id="name"
+              name="name"
               type="text"
-              value={name ?? ""}
-              placeholder="Enter new group name..."
+              value={newName ?? ""}
+              onChange={(e) => setNewName(e.target.value)}
               className="w-full p-2 rounded-md bg-[#1E293B] border border-[#38BDF8] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#38BDF8] transition-all"
-              required
             />
           </div>
 
           <div className="flex justify-end space-x-3 mt-4">
-            <input type="hidden" name="actionType" value={actionType} />
             <input type="hidden" name="roomId" value={roomId} />
             <button
               onClick={onClose}
