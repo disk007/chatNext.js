@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../../../prisma/prisma";
 
 interface Params {
@@ -8,7 +8,7 @@ interface Params {
   };
 }
 
-export const GET = async (request: Request,
+export const GET = async (request: NextRequest,
    context: { params: Promise<{ id: string; userId: string }> }
 ) => {
     try{
@@ -23,32 +23,33 @@ export const GET = async (request: Request,
                 id: true,
                 name: true,
                 isGroup: true,
-                messages: {
-                    select: {
-                        id: true,
-                        content: true,
-                        createdAt: true,
-                        senderId: true,
-                    },
-                },
+                // messages: {
+                //     select: {
+                //         id: true,
+                //         content: true,
+                //         createdAt: true,
+                //         senderId: true,
+                //     },
+                // },
                 members: {
                     where: { userId }, 
                     select: { isApproved: true },
                 },
             },
         });
-        const updatedMessages = chat?.messages.map(msg => ({
-            id: msg.id,
-            content: msg.content,
-            createdAt: msg.createdAt,
-            anotherChat: msg.senderId !== userId, 
-        }));
+        console.log("Fetched chat data:", chat);
+        // const updatedMessages = chat?.messages.map(msg => ({
+        //     id: msg.id,
+        //     content: msg.content,
+        //     createdAt: msg.createdAt,
+        //     anotherChat: msg.senderId !== userId, 
+        // }));
         const chatData = {
             id: chat?.id,
             name: chat?.name,
             isGroup: chat?.isGroup,
             isApproved: chat?.members[0]?.isApproved ?? false,
-            messages: updatedMessages,
+            // messages: updatedMessages,
         };
 
         return NextResponse.json({

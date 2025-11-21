@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "../../../../../prisma/prisma";
 
-export const GET = async (req:Response,context:{params:Promise<{roomId:string}>}) => {
+export const GET = async (req:NextRequest,context:{params:Promise<{roomId:string}>}) => {
     try {
         const params = await context.params;
         const roomId = parseInt(params.roomId)

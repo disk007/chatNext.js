@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useClickOutside } from "../hook/useClickOutside";
 import { useMenuChat } from "../hook/useMenuChat";
 import { ModalApproveMembers, ModalChageGroupName, ModalMembers } from "./modal";
+import { ContentNameProps } from "../interface/DetailChat";
+
 
 const MenuChat = ({ roomId,name }: ContentNameProps) => {
     const [open, setOpen] = useState(false);

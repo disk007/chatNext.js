@@ -3,6 +3,9 @@ import { getMenuChat } from "../components/action/getMenuChat";
 import { getMembers } from "../components/action/getMembers";
 import { da, fa } from "zod/locales";
 import { getApproveMembers } from "../components/action/getApproveMembers";
+import { ContentProps } from "../interface/DetailChat";
+import {menuChat,PropMembers} from "../interface/menuChat"
+
 
 export function useMenuChat({ roomId }: ContentProps) {
   const [menuChat, setMenuChat] = useState<menuChat | null>(null);
