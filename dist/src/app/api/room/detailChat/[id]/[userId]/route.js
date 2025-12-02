@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GET = void 0;
 const server_1 = require("next/server");
-const prisma_1 = require("../../../../../../../prisma/prisma");
+const prisma_1 = require("@/prisma/prisma");
 const GET = async (request, context) => {
     try {
         const params = await context.params;
@@ -16,32 +16,17 @@ const GET = async (request, context) => {
                 id: true,
                 name: true,
                 isGroup: true,
-                messages: {
-                    select: {
-                        id: true,
-                        content: true,
-                        createdAt: true,
-                        senderId: true,
-                    },
-                },
                 members: {
                     where: { userId },
                     select: { isApproved: true },
                 },
             },
         });
-        const updatedMessages = chat?.messages.map(msg => ({
-            id: msg.id,
-            content: msg.content,
-            createdAt: msg.createdAt,
-            anotherChat: msg.senderId !== userId,
-        }));
         const chatData = {
             id: chat?.id,
             name: chat?.name,
             isGroup: chat?.isGroup,
             isApproved: chat?.members[0]?.isApproved ?? false,
-            messages: updatedMessages,
         };
         return server_1.NextResponse.json({
             status: "success",

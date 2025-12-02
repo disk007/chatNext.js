@@ -17,6 +17,16 @@ const GET = async (request, context) => {
                 id: true,
                 name: true,
                 createdAt: true,
+                _count: {
+                    select: {
+                        messages: {
+                            where: {
+                                isRead: false,
+                                senderId: userId, // ถ้ามี field บอกว่าใครเป็นผู้รับ
+                            },
+                        },
+                    },
+                },
                 messages: {
                     orderBy: { createdAt: 'desc' }, // เรียงจากล่าสุด
                     take: 1, // ดึงข้อความล่าสุด 1 ข้อความ
@@ -34,7 +44,7 @@ const GET = async (request, context) => {
                 },
             },
         });
-        const rooms = raw.sort((a, b) => {
+        const sortData = raw.sort((a, b) => {
             const aTime = a.messages[0]?.createdAt
                 ? new Date(a.messages[0].createdAt).getTime()
                 : 0;
@@ -43,6 +53,13 @@ const GET = async (request, context) => {
                 : 0;
             return bTime - aTime;
         });
+        const rooms = sortData.map(room => ({
+            id: room.id,
+            name: room.name,
+            createdAt: room.createdAt,
+            messages: room.messages,
+            unreadCount: room._count.messages
+        }));
         return server_1.NextResponse.json({
             status: "success",
             rooms,

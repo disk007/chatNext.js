@@ -5,6 +5,7 @@ exports.default = RootLayout;
 const google_1 = require("next/font/google");
 require("./globals.css");
 const sonner_1 = require("sonner");
+const useAuth_1 = require("./\u0E35useConText/useAuth");
 const geistSans = (0, google_1.Geist)({
     variable: "--font-geist-sans",
     subsets: ["latin"],
@@ -20,7 +21,9 @@ exports.metadata = {
 function RootLayout({ children, }) {
     return (<html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
+        <useAuth_1.AuthProvider>
+          {children}
+        </useAuth_1.AuthProvider>
         <sonner_1.Toaster richColors position="top-right"/>
       </body>
     </html>);

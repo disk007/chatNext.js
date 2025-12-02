@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../../prisma/prisma";
 
 
-export const POST = async (req: Request) =>{
+export const POST = async (req: Request) => {
     try {
         const body = await req.json();
-        const {message, userId,roomId} = body;
+        const { message, userId, roomId } = body;
         const newMessage = await prisma.message.create({
-            data:{
+            data: {
                 content: message,
                 roomId: Number(roomId),
                 senderId: userId,
@@ -22,20 +22,28 @@ export const POST = async (req: Request) =>{
                 content: true,
                 createdAt: true,
                 senderId: true,
+                sender: {
+                    select: {
+                        username: true,
+                    },
+                },
             },
         });
         const updatedMessages = chat?.map(msg => ({
             id: msg.id,
             content: msg.content,
             createdAt: msg.createdAt,
-            anotherChat: msg.senderId !== userId, 
+            anotherChat: msg.senderId !== userId,
+            userId: msg.senderId,
+            username: msg.sender?.username || "Unknown",
+
         }));
         return NextResponse.json({ status: "success", message: updatedMessages });
-        
+
     } catch (error) {
         return NextResponse.json({ status: "error", message: error }, { status: 500 });
     }
-    
+
 
 
 }

@@ -27,36 +27,24 @@ export function useMessage({ roomId }: ContentProps) {
     setIsLoadingMessage(true);
     const data = await GetMessages(roomId);
     setMessage(data.chat || null);
+    if (data.status === 'success') {
+      socket.emit("read-messages", roomId);
+    }
     setIsLoadingMessage(false);
   };
   useEffect(() => {
-    if (!roomId) return;
-
-    // join room
-    socket.emit("join-room", roomId);
-
-    // fetch ข้อมูลครั้งแรก
     fetchMessages();
-
-    // const handleNewMessage = (data: any) => {
-    //     console.log("Received new-message in useMessage:", data);
-    //     appendMessage({
-    //     id: data.id,
-    //     content: data.message,
-    //     createdAt: data.createdAt,
-    //     anotherChat: false
-    //     });
-    // };
-
+    socket.emit("join-room", roomId);
     socket.on("new-message", (newMsg) => {
         console.log("new-message event data:", newMsg);
         appendMessage({
-            id: newMsg.id,
-            content: newMsg.message,
-            createdAt: newMsg.createdAt,
-            anotherChat: false
+            id: newMsg.message.id,
+            content: newMsg.message.content,
+            createdAt: newMsg.message.createdAt,
+            senderId: newMsg.message.sendId,
         });
     });
+    
     
     return () => {
       socket.off("new-message");

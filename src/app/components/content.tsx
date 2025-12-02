@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import { GetDetailChat } from "../api/room/detailChat/getDatailChat";
 import { EllipsisVerticalIcon, PaperClipIcon } from "@heroicons/react/24/outline";
@@ -11,15 +10,18 @@ import { useDetailChat } from "../hook/useDetailChat";
 import MenuChat from "./menuChat";
 import { ContentProps } from "../interface/DetailChat";
 import { useMessage } from "../hook/useMessage";
+import { getProfile } from "../api/profile/getProfile";
+import { useAuth } from "../ีuseConText/useAuth";
+import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 
 
 const Content = ({ roomId }: ContentProps) => {
-
+  const {user} = useAuth();
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const { detailChat, isLoading } = useDetailChat({roomId});
+  const { detailChat, isLoading} = useDetailChat({roomId});
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const { message, isLoadingMessage} = useMessage({roomId});
   useEffect(() => {
@@ -28,8 +30,8 @@ const Content = ({ roomId }: ContentProps) => {
     }
   }, [message, isLoadingMessage]);
   return (
-    <div className="ml-[450px] h-screen w-[calc(100%-450px)] flex flex-col fixed bg-gradient-to-b from-[#0F172A] to-[#1E293B] text-[#E2E8F0]">
-      {isLoadingMessage && (
+    <div className="ml-[450px] h-screen w-[calc(100%-450px)] flex flex-col fixed bg-linear-to-b from-[#0F172A] to-[#1E293B] text-[#E2E8F0]">
+      {isLoadingMessage &&(
         <div className="flex-1 flex justify-center items-center">
           <div className="flex flex-col items-center">
             <div className="w-10 h-10 border-4 border-t-[#38BDF8] border-gray-700 rounded-full animate-spin"></div>
@@ -55,10 +57,9 @@ const Content = ({ roomId }: ContentProps) => {
                 <div className="flex-1 overflow-y-auto p-4 space-y-4" >
                   {message?.map((msg, key) => (
                     <div key={key}>
-                      
                       {/* ข้อความฝั่งซ้าย (คนอื่น) */}
-                      {msg.anotherChat == true && (
-                        <div className="flex items-start space-x-3">
+                      {msg.senderId != user?.id && (
+                        <div className="flex items-center space-x-3">
                           <img
                             src="https://i.pravatar.cc/40?img=1"
                             alt="profile"
@@ -67,13 +68,18 @@ const Content = ({ roomId }: ContentProps) => {
                           <div className="bg-gray-700 text-white p-3 rounded-lg max-w-xs">
                             {msg.content}
                           </div>
+                          {user?.role === "admin" && (
+                            <EllipsisVerticalIcon className="w-5 h-5 text-gray-500 cursor-pointer rounded hover:text-white" />
+                          )}
+                          
                         </div>
                       )}
 
                       {/* ข้อความฝั่งขวา (ตัวเรา) */}
-                      {msg.anotherChat == false && (
-                        <div className="flex items-start justify-end space-x-3">
-                          <div className="bg-blue-600 text-white p-3 rounded-lg max-w-xs">
+                      {msg.senderId == user?.id && (
+                        <div className="flex items-center justify-end space-x-3">
+                          <EllipsisVerticalIcon className="cursor-pointer rounded w-5 h-5 text-gray-500 hover:text-white" />
+                          <div className="bg-blue-600  text-white p-3 rounded-lg max-w-xs">
                             {msg.content}
                           </div>
                           <img

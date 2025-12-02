@@ -29,6 +29,16 @@ app.prepare().then(() => {
     socket.on("send-message", (message) => {
       console.log("📩 New message:", message);
       io.to(message.roomId).emit("new-message", message);
+      io.to(message.roomId).emit("update-message", message);
+    });
+
+    socket.on("read-messages", (roomId) => {
+      console.log(`✅ Messages in room ${roomId} marked as read`);
+      io.to(roomId).emit("room-read", roomId );
+    });
+
+    socket.on("disconnect", () => {
+      console.log("🔴 User disconnected:", socket.id);
     });
   });
 

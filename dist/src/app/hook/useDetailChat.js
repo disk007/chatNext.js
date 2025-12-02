@@ -13,8 +13,8 @@ function useDetailChat({ roomId }) {
     const [isLoading, setIsLoading] = (0, react_1.useState)(true);
     const fetchDetailChat = async () => {
         if (!roomId) {
-            setDetailChat(null);
             setIsLoading(false);
+            setDetailChat(null);
             return;
         }
         setIsLoading(true);
@@ -23,24 +23,7 @@ function useDetailChat({ roomId }) {
         setIsLoading(false);
     };
     (0, react_1.useEffect)(() => {
-        if (!roomId)
-            return;
-        // join room
-        socket.emit("join-room", roomId);
-        // fetch ข้อมูลครั้งแรก
         fetchDetailChat();
-        // subscribe message ใหม่
-        const handleNewMessage = async (message) => {
-            console.log("Received new-message:", message);
-            // ถ้าต้องการ fetch ใหม่จาก API
-            await fetchDetailChat();
-            // หรือถ้าแค่ map content
-            // setDetailChat(prev => prev ? { ...prev, messages: [...prev.messages, { content: message.message }] } : prev);
-        };
-        socket.on("new-message", handleNewMessage);
-        return () => {
-            socket.off("new-message", handleNewMessage);
-        };
     }, [roomId]);
     return { detailChat, isLoading, fetchDetailChat };
 }

@@ -13,6 +13,10 @@
 {
     const handler = {};
 }
+// Validate ../../src/app/api/activity/[id]/route.ts
+{
+    const handler = {};
+}
 // Validate ../../src/app/api/addChat/route.ts
 {
     const handler = {};
@@ -42,6 +46,10 @@
     const handler = {};
 }
 // Validate ../../src/app/api/menuChat/[userId]/[roomId]/route.ts
+{
+    const handler = {};
+}
+// Validate ../../src/app/api/messages/[id]/[userId]/route.ts
 {
     const handler = {};
 }
