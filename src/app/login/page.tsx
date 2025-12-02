@@ -3,10 +3,14 @@ import { useActionState, useEffect, useState } from "react";
 import { handleLoginSubmit } from "./handle";
 import { Button } from "../ds/Button";
 import { showToast, ToastStatusEnum } from "../toast/toast";
+import { useAuth } from "../ีuseConText/useAuth";
+import { useRouter } from "next/navigation";
 
 const page = () => {
     const inputField = "border border-gray-300 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-400";
     const [message, formAction] = useActionState(handleLoginSubmit,null);
+    const router = useRouter();
+    const {refreshProfile} = useAuth();
     const [formValues, setFormValues] = useState({
         username: "",
         password: "",
@@ -24,7 +28,10 @@ const page = () => {
     useEffect(() => {
         if (message?.status === "success") {
             showToast(ToastStatusEnum.SUCCESS, message.message);
-            resetformValues();
+            refreshProfile().then(() => {
+                resetformValues();
+                router.push("/");
+            });
         } else if (message?.status === "duplicate") {
             showToast(ToastStatusEnum.WARNING, message.message);
         } else if (message?.status === "error") {

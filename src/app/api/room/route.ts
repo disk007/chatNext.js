@@ -22,32 +22,3 @@ export const POST = async (request: Request) => {
     });
     return NextResponse.json({ status: 'success', message: "Room created successfully"});
 }
-
-// export const GET = async (request: Request) => {
-//     try{
-//         const body = await request.json();
-//         const { userId } = body;
-//         const rooms = await prisma.chatRoom.findMany({
-//         where: {
-//             members: {
-//             some: { userId: userId }, 
-//             },
-//         },
-//         include: {
-//             members: {
-//                 include: { user: true }, 
-//             },
-//         },
-//         });
-
-//         return NextResponse.json({
-//             status: "success",
-//             rooms,
-//         });
-//     }
-//     catch(error){
-//         return NextResponse.json({ status: "error", message: "Network error" }, { status: 500 });
-//     }
-    
-    
-// }

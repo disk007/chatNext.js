@@ -8,6 +8,5 @@ const sidebar_1 = __importDefault(require("./components/sidebar"));
 function Home() {
     return (<>
       <sidebar_1.default />
-      {/* <Content /> */}
     </>);
 }

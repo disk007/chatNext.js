@@ -27,7 +27,7 @@ const SendChat = ({ roomId }) => {
         if (message?.status === "success") {
             socket.emit("send-message", {
                 roomId,
-                message: formValues.message,
+                message: message.message[message.message.length - 1],
             });
             resetformValues();
         }

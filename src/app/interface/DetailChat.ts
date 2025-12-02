@@ -8,7 +8,7 @@ export interface ContentProps {
 };
 
 export interface Message {
-  anotherChat: boolean;
+  senderId: number;
   id: number;
   content: string;
   createdAt: string;

@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { LoginSchema, LoginData } from "./validation";
 import { redirect } from "next/navigation";
+import { useAuth } from "../ีuseConText/useAuth";
 
 export async function handleLoginSubmit(prevState:any,formData: FormData) {
   const data = {
@@ -42,6 +43,7 @@ export async function handleLoginSubmit(prevState:any,formData: FormData) {
         path: "/",
         maxAge: 60 * 60 * 24, // 1 วัน
       });
+      return { status: "success", message: "Login successful"};
     }
   } catch (error) {
     console.error("API Error:", error);

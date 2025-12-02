@@ -31,9 +31,8 @@ const SendChat = ({roomId}:SendChatProps) => {
         if (message?.status === "success") {
             socket.emit("send-message", {
                 roomId, 
-                message: formValues.message,
+                message: message.message[message.message.length -1],
             });
-            console.log("Message sent via socket:",formValues.message);
             resetformValues();
         } else if (message?.status === "error") {
             showToast(ToastStatusEnum.ERROR, message.message);

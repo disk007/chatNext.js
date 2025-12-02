@@ -5,9 +5,6 @@ exports.prisma = void 0;
 const client_1 = require("@prisma/client");
 const globalForPrisma = global;
 exports.prisma = globalForPrisma.prisma ||
-    new client_1.PrismaClient({
-        log: ["query", "error", "warn"],
-        datasourceUrl: process.env.DATABASE_URL,
-    });
-if (process.env.NODE_ENV !== "production")
+    new client_1.PrismaClient(); // ❌ ไม่ใส่ datasourceUrl
+if (process.env.NODE_ENV !== 'production')
     globalForPrisma.prisma = exports.prisma;

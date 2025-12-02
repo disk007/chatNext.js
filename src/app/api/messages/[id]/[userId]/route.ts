@@ -19,15 +19,25 @@ export const GET = async (request: NextRequest,
                 senderId: true,
             },
         });
-        const updatedMessages = chat?.map(msg => ({
-            id: msg.id,
-            content: msg.content,
-            createdAt: msg.createdAt,
-            anotherChat: msg.senderId !== userId, 
-        }));
+        // const updatedMessages = chat?.map(msg => ({
+        //     id: msg.id,
+        //     content: msg.content,
+        //     createdAt: msg.createdAt,
+        //     anotherChat: msg.senderId !== userId, 
+        // }));
+        await prisma.message.updateMany({
+            where: {
+                roomId: roomId,
+                senderId: userId,
+                isRead: false,
+            },
+            data: {
+                isRead: true,
+            },
+        });
         return NextResponse.json({
             status: "success",
-            chat:updatedMessages,
+            chat:chat,
         });
     } catch (error) {
         console.error("Error fetching chat details:", error);
