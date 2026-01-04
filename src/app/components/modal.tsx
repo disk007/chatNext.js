@@ -14,6 +14,9 @@ import { actionMembers } from "./action/actionMembers";
 import { updateGroup } from "./action/updateGroup";
 import { useDetailChat } from "../hook/useDetailChat";
 import { interfaceApproveMembers,interfaceChageGroupName,interfaceMembers } from "../interface/menuChat"
+import { interfaceEditMessage } from "../interface/message";
+import { editMessage } from "./action/editMessage";
+import { io } from "socket.io-client";
 interface ModalProps {
   title: string;
   onClose: () => void;
@@ -386,6 +389,71 @@ export function ModalChageGroupName({ title,name, roomId, onClose }: interfaceCh
 
           <div className="flex justify-end space-x-3 mt-4">
             <input type="hidden" name="roomId" value={roomId} />
+            <button
+              onClick={onClose}
+              className="cursor-pointer px-4 py-2 rounded bg-[#334155] hover:bg-[#475569] transition-colors"
+            >
+              Cancel
+            </button>
+            <Button
+              type="submit"
+              text="Change"
+              className="px-4 py-2 rounded font-semibold transition-colors bg-[#38BDF8] hover:bg-[#0EA5E9] text-white"
+            />
+          </div>
+        </form>
+      </div>
+    </div>,
+    container
+  );
+}
+
+const socket = io("http://localhost:3000", {
+    path: "/api/socket",
+});
+export function ModalEditMessage({ messageId,content,onClose,title }: interfaceEditMessage) {
+  const container = useModalRoot();
+  const [message, formAction] = useActionState(editMessage, null);
+  const [newName,setNewName] = useState(content)
+  useEffect(() => {
+    if (message?.status === "success") {
+      onClose()
+      socket.emit("edit-message",message.message);
+      // showToast(ToastStatusEnum.SUCCESS, message.message);
+      
+    } else if (message?.status === "error") {
+      showToast(ToastStatusEnum.ERROR, message.message);
+    } else if (message?.status === "warning") {
+      showToast(ToastStatusEnum.WARNING, message.message)
+    } else if (message?.status === "info") {
+      showToast(ToastStatusEnum.INFO, message.message)
+    }
+  }, [message]);
+  if (!container) return null;
+
+  return createPortal(
+    <div className={`fixed inset-0 bg-black/20 bg-opacity-50 flex items-center justify-center z-50`}>
+      <div className={`bg-[#1E293B] text-[#E2E8F0] rounded-2xl p-6 w-full max-w-sm`}>
+        <form action={formAction}>
+          <div className="text-lg font-semibold mb-2 text-[#38BDF8]">
+            {title}
+          </div>
+          <div className="max-h-80 overflow-y-auto space-y-3">
+            <input
+              id="message"
+              name="message"
+              type="text"
+              value={newName ?? ""}
+              onChange={(e) => setNewName(e.target.value)}
+              className="w-full p-2 rounded-md bg-[#1E293B] border border-[#38BDF8] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#38BDF8] transition-all"
+            />
+            {message?.chat && (
+              <p className="text-xs text-red-500">{message.chat}</p>
+            )}
+          </div>
+
+          <div className="flex justify-end space-x-3 mt-4">
+            <input type="hidden" name="messageId" value={messageId} />
             <button
               onClick={onClose}
               className="cursor-pointer px-4 py-2 rounded bg-[#334155] hover:bg-[#475569] transition-colors"

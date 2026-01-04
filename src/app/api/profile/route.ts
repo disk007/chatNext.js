@@ -19,14 +19,26 @@ export const GET = async (req: Request) => {
             return NextResponse.json({ message: "Invalid token" }, { status: 401 });
         }
 
-        const user = await prisma.user.findUnique({
+        const data = await prisma.user.findUnique({
         where: { id: userId },
             select: {
                 id: true,
                 username: true,
+                chatMembers: {
+                    select: {
+                        role: true,
+                    },
+                    take: 1,
+                }
             },
         });
-        if (!user) {
+        const user = {
+            id: data?.id,
+            username: data?.username,
+            role: data?.chatMembers[0]?.role || null,
+        };
+
+        if (!data) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
         return NextResponse.json(user);

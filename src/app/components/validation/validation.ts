@@ -17,6 +17,12 @@ export const JoinRoomSchema = z.object({
       message: "Code cannot start with a space.",
     }),
 });
+export const EditMessageSchema = z.object({
+  message: z.string().min(1, {message:'Message is required.'})
+    .refine((val) => !/^\s/.test(val), { message: "Message cannot start with a space." }),
+});
+
 export type AddRoomData = z.infer<typeof AddRoomSchema>;
 export type AddMessageData = z.infer<typeof AddMessageSchema>;
 export type JoinRoomData = z.infer<typeof JoinRoomSchema>;
+export type EditMessageData = z.infer<typeof EditMessageSchema>;
