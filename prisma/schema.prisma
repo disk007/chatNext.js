@@ -51,11 +51,19 @@ model Message {
   content   String
   createdAt DateTime  @default(now())
   isRead    Boolean   @default(false)
-  files     String?
   room      ChatRoom  @relation(fields: [roomId], references: [id])
   roomId    Int
   sender    User?     @relation("UserMessages", fields: [senderId], references: [id])
   senderId  Int?
+  files     MessageFile[]
+}
+model MessageFile {
+  id           Int      @id @default(autoincrement())
+  originalName String
+  storedName   String
+
+  message      Message  @relation(fields: [messageId], references: [id])
+  messageId    Int
 }
 
 
