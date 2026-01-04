@@ -13,9 +13,14 @@ export function useListChat({ roomId }: userIdProps = {}) {
     const [rooms, setRooms] = useState<ListChat[] | null>(null);
     const [loading, setLoading] = useState(true);
     const updateMessageById = (roomId: number, updatedMsg: any) => {
+        const count = updatedMsg.files?.length ?? 0;
         const formattedMsg = {
             id: updatedMsg.id,
-            content: updatedMsg.content,
+            content: (!updatedMsg.content || updatedMsg.content.trim() === "") && count > 0
+                ? count === 1
+                    ? `Sent an attachment`
+                    : `Sent ${count} attachments`
+                : updatedMsg.content,
             createdAt: updatedMsg.createdAt,
             sender: {
                 id: updatedMsg.userId,

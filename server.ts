@@ -27,7 +27,6 @@ app.prepare().then(() => {
     });
 
     socket.on("send-message", (message) => {
-      console.log("📩 New message:", message);
       io.to(message.roomId).emit("new-message", message);
       io.to(message.roomId).emit("update-message", message);
     });
@@ -35,6 +34,16 @@ app.prepare().then(() => {
     socket.on("read-messages", (roomId) => {
       console.log(`✅ Messages in room ${roomId} marked as read`);
       io.to(roomId).emit("room-read", roomId );
+    });
+
+    socket.on("edit-message", (updatedMsg) => {
+      console.log("✏️ Message edited:");
+      io.emit("message-edited", updatedMsg);
+    });
+
+    socket.on("delete-message", (messageId,type) => {
+      console.log(`🗑️ Message ${messageId} deleted`);
+      io.emit("message-deleted", messageId,type);
     });
 
     socket.on("disconnect", () => {

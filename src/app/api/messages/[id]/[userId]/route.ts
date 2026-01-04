@@ -17,14 +17,18 @@ export const GET = async (request: NextRequest,
                 content: true,
                 createdAt: true,
                 senderId: true,
+                files: {
+                    select: {
+                        id: true,
+                        originalName: true,
+                        storedName: true,
+                    },
+                },
+            },
+            orderBy: {
+                id: "asc",
             },
         });
-        // const updatedMessages = chat?.map(msg => ({
-        //     id: msg.id,
-        //     content: msg.content,
-        //     createdAt: msg.createdAt,
-        //     anotherChat: msg.senderId !== userId, 
-        // }));
         await prisma.message.updateMany({
             where: {
                 roomId: roomId,

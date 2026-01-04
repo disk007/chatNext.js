@@ -8,11 +8,18 @@ export interface ContentProps {
 };
 
 export interface Message {
-  senderId: number;
   id: number;
   content: string;
   createdAt: string;
+  senderId: number;
+  files: file[];
 };
+
+export interface file {
+  id: number;
+  originalName: string;
+  storedName: string;
+}
 
 export interface ChatDetail {
   id: number;

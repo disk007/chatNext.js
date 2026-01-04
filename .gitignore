@@ -20,6 +20,11 @@
 # production
 /build
 
+# system 
+/dist
+/.next
+/uploads
+
 # misc
 .DS_Store
 *.pem
